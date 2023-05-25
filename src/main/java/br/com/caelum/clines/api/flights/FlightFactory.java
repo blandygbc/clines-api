@@ -38,7 +38,8 @@ public class FlightFactory {
     private void populateAircraft(FlightForm form, ArrayList<Exception> violations) {
         aircraftService
                 .findByCode(form.getAircraftId())
-                .ifPresentOrElse(form::setAircraft, () -> violations.add(new AircraftNotFoundException("Invalid Aircraft")));
+                .ifPresentOrElse(form::setAircraft,
+                        () -> violations.add(new AircraftNotFoundException("Invalid Aircraft")));
     }
 
     private void populateWaypointForm(WaypointForm form, ArrayList<Exception> violations, String message) {

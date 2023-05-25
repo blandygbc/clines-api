@@ -6,9 +6,9 @@ import lombok.Getter;
 
 @Getter
 public class ViolationException extends IllegalArgumentException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final Collection<Exception> violations;
+    private final Collection<Exception> violations;
 
     public ViolationException(Collection<Exception> violations) {
         this.violations = violations;
