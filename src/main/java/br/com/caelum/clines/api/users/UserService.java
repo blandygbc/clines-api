@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
 
+import br.com.caelum.clines.shared.exceptions.ResourceAlreadyExistsException;
+import br.com.caelum.clines.shared.exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -17,8 +19,10 @@ public class UserService {
     private final UserViewMapper viewMapper;
     private final UserFormMapper formMapper;
 
-    public UserView showUserBy(String normalize) {
-        return null;
+    public UserView showUserBy(Long id) {
+        var user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cannot find user"));
+
+        return viewMapper.map(user);
     }
 
     public List<UserView> listAllUser() {
@@ -26,7 +30,15 @@ public class UserService {
     }
 
     public String createUserBy(@Valid UserForm form) {
-        return null;
+        repository.findByEmail(form.getEmail()).ifPresent(user -> {
+            throw new ResourceAlreadyExistsException("User already exists");
+        });
+
+        final var user = formMapper.map(form);
+
+        repository.save(user);
+
+        return user.getId().toString();
     }
 
 }

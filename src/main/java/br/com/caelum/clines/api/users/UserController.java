@@ -1,5 +1,10 @@
 package br.com.caelum.clines.api.users;
 
+import static org.springframework.http.ResponseEntity.created;
+
+import java.net.URI;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -10,24 +15,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static br.com.caelum.clines.shared.util.StringNormalizer.normalize;
-import static org.springframework.http.ResponseEntity.created;
-
-import java.net.URI;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("users")
 @AllArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService service;
 
-    @GetMapping("{code}")
-    UserView show(@PathVariable String code) {
-        return service.showUserBy(normalize(code));
+    @GetMapping("/{id}")
+    UserView show(@PathVariable Long id) {
+        return service.showUserBy(id);
     }
 
     @GetMapping
@@ -36,10 +35,10 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<?> createBy(@RequestBody @Valid UserForm form) {
-        var code = service.createUserBy(form);
+    ResponseEntity<URI> createBy(@RequestBody @Valid UserForm form) {
+        var id = service.createUserBy(form);
 
-        var uri = URI.create("/users/").resolve(code);
+        var uri = URI.create("/users/").resolve(id);
 
         return created(uri).build();
     }
